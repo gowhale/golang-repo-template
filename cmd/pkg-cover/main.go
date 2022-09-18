@@ -21,11 +21,8 @@ const (
 )
 
 var excludedPkgs = map[string]bool{
-	"go-shopping-list":                  true,
-	"go-shopping-list/cmd/pkg-cover":    true,
-	"go-shopping-list/cmd/authenticate": true,
-	"go-shopping-list/pkg/common":       true,
-	"go-shopping-list/pkg/fruit":        true,
+	"golang-repo-template":               true,
+	"golang-repo-template/cmd/pkg-cover": true,
 }
 
 func main() {
