@@ -112,7 +112,7 @@ func (*execute) validateTestOutput(tl []testLine, o string) error {
 	invalidOutputs := []string{}
 	for _, line := range tl {
 		switch {
-		case line.coverage == coverageStringNotFound:
+		case !line.coverLine:
 			invalidOutputs = append(invalidOutputs, fmt.Sprintf("pkg=%s is missing tests", line.pkgName))
 		case line.coverage < minPercentCov:
 			invalidOutputs = append(invalidOutputs, fmt.Sprintf("pkg=%s cov=%f under the %f%% minimum line coverage", line.pkgName, line.coverage, minPercentCov))

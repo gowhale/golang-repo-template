@@ -122,3 +122,24 @@ func (m *mainTest) Test_covertOutputToCoverage_testsLine_Fail() {
 	m.Equal(tl, []testLine(nil))
 	m.EqualError(err, "strconv.ParseFloat: parsing \"wrong\": invalid syntax")
 }
+
+func (m *mainTest) Test_validateTestOutput_sufficentCov_testLine() {
+	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: 81, coverLine: true}}
+
+	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
+	m.Nil(err)
+}
+
+func (m *mainTest) Test_validateTestOutput_NOT_sufficentCov_testLine() {
+	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: 79, coverLine: true}}
+
+	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
+	m.EqualError(err,"the following pkgs are not valid: [pkg=golang-repo-template/cmd/pkg-test cov=79.000000 under the 80.000000% minimum line coverage]")
+}
+
+func (m *mainTest) Test_validateTestOutput_testLine_missing_tests() {
+	expectedTl := []testLine{{coverLine: false}}
+
+	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
+	m.EqualError(err,"the following pkgs are not valid: [pkg= is missing tests]")
+}
