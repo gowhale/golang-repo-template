@@ -13,6 +13,9 @@ const (
 	runGoTestFunc              = "runGoTest"
 	covertOutputToCoverageFunc = "covertOutputToCoverage"
 	validateTestOutputFunc     = "validateTestOutput"
+
+	underCoverage = 79.0
+	overCoverage = 81.0
 )
 
 type mainTest struct {
@@ -66,10 +69,10 @@ func (m *mainTest) Test_run_runGoTest_Error() {
 }
 
 func (m *mainTest) Test_getCoverage_testLine_Pass() {
-	tl, err := getCoverage("ok      cmd/pkg-cover      0.182s  coverage: 38.5% of statements")
+	tl, err := getCoverage("ok      cmd/pkg-cover      0.182s  coverage: 79% of statements")
 
 	m.Equal(true, tl.coverLine)
-	m.Equal(38.5, tl.coverage)
+	m.Equal(underCoverage, tl.coverage)
 	m.Nil(err)
 }
 
@@ -84,7 +87,7 @@ func (m *mainTest) Test_getCoverage_noTestLine() {
 	tl, err := getCoverage("?       golang-repo-template/cmd/fruit  [no test files]")
 
 	m.Equal(true, tl.coverLine)
-	m.Equal(-1.0, tl.coverage)
+	m.Equal(coverageStringNotFound, tl.coverage)
 	m.Nil(err)
 }
 
@@ -105,9 +108,9 @@ func (m *mainTest) Test_covertOutputToCoverage_noTests_Pass() {
 }
 
 func (m *mainTest) Test_covertOutputToCoverage_testsLine_Pass() {
-	commandOutput := `ok      golang-repo-template/cmd/pkg-test      0.179s  coverage: 64.6% of statements
+	commandOutput := `ok      golang-repo-template/cmd/pkg-test      0.179s  coverage: 79% of statements
 	`
-	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: 64.6, coverLine: true}}
+	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: underCoverage, coverLine: true}}
 
 	tl, err := m.executeStruct.covertOutputToCoverage(commandOutput)
 	m.Equal(tl, expectedTl)
@@ -124,22 +127,22 @@ func (m *mainTest) Test_covertOutputToCoverage_testsLine_Fail() {
 }
 
 func (m *mainTest) Test_validateTestOutput_sufficentCov_testLine() {
-	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: 81, coverLine: true}}
+	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-pizza", coverage: overCoverage, coverLine: true}}
 
 	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
 	m.Nil(err)
 }
 
 func (m *mainTest) Test_validateTestOutput_NOT_sufficentCov_testLine() {
-	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: 79, coverLine: true}}
+	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: underCoverage, coverLine: true}}
 
 	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
-	m.EqualError(err,"the following pkgs are not valid: [pkg=golang-repo-template/cmd/pkg-test cov=79.000000 under the 80.000000% minimum line coverage]")
+	m.EqualError(err, "the following pkgs are not valid: [pkg=golang-repo-template/cmd/pkg-test cov=79.000000 under the 80.000000% minimum line coverage]")
 }
 
 func (m *mainTest) Test_validateTestOutput_testLine_missing_tests() {
 	expectedTl := []testLine{{coverLine: false}}
 
 	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
-	m.EqualError(err,"the following pkgs are not valid: [pkg= is missing tests]")
+	m.EqualError(err, "the following pkgs are not valid: [pkg= is missing tests]")
 }

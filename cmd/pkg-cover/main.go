@@ -12,7 +12,7 @@ import (
 const (
 	minPercentCov = 80.0
 
-	coverageStringNotFound = -1
+	coverageStringNotFound = -1.0
 	firstItemIndex         = 1
 	floatByteSize          = 64
 	emptySliceLen          = 0
