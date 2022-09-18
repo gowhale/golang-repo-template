@@ -31,7 +31,6 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] I have ran `golangci-lint run`
 - [ ] I have ran the revive linter using the `revive.toml` settings
 - [ ] I have ran `go run ./cmd/pkg-cover`
-- [ ] I have ran `go run ./cmd/authenticate`
 
 Once all these checks have been ticked off the GitHub actions should pass and the PR is ready for review.
 - [ ] The GitHub Actions On This PR Have Passed
