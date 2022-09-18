@@ -81,7 +81,7 @@ func (m *mainTest) Test_getCoverage_testLine_Error() {
 }
 
 func (m *mainTest) Test_getCoverage_noTestLine() {
-	tl, err := getCoverage("?       golang-repo-template/pkg/fruit  [no test files]")
+	tl, err := getCoverage("?       golang-repo-template/cmd/fruit  [no test files]")
 
 	m.Equal(true, tl.coverLine)
 	m.Equal(-1.0, tl.coverage)
