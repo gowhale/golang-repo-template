@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"golang-repo-template/pkg/fruit"
+	fruit "github.com/gowhale/go-test-data/pkg/fruits"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -15,7 +15,7 @@ const (
 	validateTestOutputFunc     = "validateTestOutput"
 
 	underCoverage = 79.0
-	overCoverage = 81.0
+	overCoverage  = 81.0
 )
 
 type mainTest struct {
