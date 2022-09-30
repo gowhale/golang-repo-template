@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"golang-repo-template/pkg/fruit"
+	fruits "github.com/gowhale/go-test-data/pkg/fruits"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -15,7 +15,7 @@ const (
 	validateTestOutputFunc     = "validateTestOutput"
 
 	underCoverage = 79.0
-	overCoverage = 81.0
+	overCoverage  = 81.0
 )
 
 type mainTest struct {
@@ -36,33 +36,33 @@ func TestMainTest(t *testing.T) {
 }
 
 func (m *mainTest) Test_run_Pass() {
-	m.mockExec.On(runGoTestFunc).Return(fruit.Apple, nil)
-	m.mockExec.On(covertOutputToCoverageFunc, fruit.Apple).Return([]testLine{}, nil)
-	m.mockExec.On(validateTestOutputFunc, []testLine{}, fruit.Apple).Return(nil)
+	m.mockExec.On(runGoTestFunc).Return(fruits.Apple, nil)
+	m.mockExec.On(covertOutputToCoverageFunc, fruits.Apple).Return([]testLine{}, nil)
+	m.mockExec.On(validateTestOutputFunc, []testLine{}, fruits.Apple).Return(nil)
 
 	err := run(m.mockExec)
 	m.Nil(err)
 }
 
 func (m *mainTest) Test_validateOutput_Error() {
-	m.mockExec.On(runGoTestFunc).Return(fruit.Apple, nil)
-	m.mockExec.On(covertOutputToCoverageFunc, fruit.Apple).Return([]testLine{}, nil)
-	m.mockExec.On(validateTestOutputFunc, []testLine{}, fruit.Apple).Return(fmt.Errorf("validate error"))
+	m.mockExec.On(runGoTestFunc).Return(fruits.Apple, nil)
+	m.mockExec.On(covertOutputToCoverageFunc, fruits.Apple).Return([]testLine{}, nil)
+	m.mockExec.On(validateTestOutputFunc, []testLine{}, fruits.Apple).Return(fmt.Errorf("validate error"))
 
 	err := run(m.mockExec)
 	m.EqualError(err, "validate error")
 }
 
 func (m *mainTest) Test_run_covertOutputToCoverage_Error() {
-	m.mockExec.On(runGoTestFunc).Return(fruit.Apple, nil)
-	m.mockExec.On(covertOutputToCoverageFunc, fruit.Apple).Return([]testLine{}, fmt.Errorf("covert output error"))
+	m.mockExec.On(runGoTestFunc).Return(fruits.Apple, nil)
+	m.mockExec.On(covertOutputToCoverageFunc, fruits.Apple).Return([]testLine{}, fmt.Errorf("covert output error"))
 
 	err := run(m.mockExec)
 	m.EqualError(err, "covert output error")
 }
 
 func (m *mainTest) Test_run_runGoTest_Error() {
-	m.mockExec.On(runGoTestFunc).Return(fruit.Apple, fmt.Errorf("run go test error"))
+	m.mockExec.On(runGoTestFunc).Return(fruits.Apple, fmt.Errorf("run go test error"))
 
 	err := run(m.mockExec)
 	m.EqualError(err, "run go test error")
@@ -129,20 +129,20 @@ func (m *mainTest) Test_covertOutputToCoverage_testsLine_Fail() {
 func (m *mainTest) Test_validateTestOutput_sufficentCov_testLine() {
 	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-pizza", coverage: overCoverage, coverLine: true}}
 
-	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
+	err := m.executeStruct.validateTestOutput(expectedTl, fruits.Apple)
 	m.Nil(err)
 }
 
 func (m *mainTest) Test_validateTestOutput_NOT_sufficentCov_testLine() {
 	expectedTl := []testLine{{pkgName: "golang-repo-template/cmd/pkg-test", coverage: underCoverage, coverLine: true}}
 
-	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
+	err := m.executeStruct.validateTestOutput(expectedTl, fruits.Apple)
 	m.EqualError(err, "the following pkgs are not valid: [pkg=golang-repo-template/cmd/pkg-test cov=79.000000 under the 80.000000% minimum line coverage]")
 }
 
 func (m *mainTest) Test_validateTestOutput_testLine_missing_tests() {
 	expectedTl := []testLine{{coverLine: false}}
 
-	err := m.executeStruct.validateTestOutput(expectedTl, fruit.Apple)
+	err := m.executeStruct.validateTestOutput(expectedTl, fruits.Apple)
 	m.EqualError(err, "the following pkgs are not valid: [pkg= is missing tests]")
 }
